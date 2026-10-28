@@ -21,3 +21,13 @@
     --ring: 142.1 76.2% 36.3%;
   }
 }
+
+body { margin:0; color:#172b21; background:#f5f8f4; font-family:Inter,system-ui,sans-serif; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+button { transition: background-color .15s, opacity .15s; }
+button:disabled { opacity:.5; cursor:not-allowed; }
+:focus-visible { outline:3px solid #16a34a; outline-offset:3px; }
+main { max-width:1440px; margin:auto; }
+main p { overflow-wrap:anywhere; }
+@media(max-width:767px) { main .flex.justify-between { flex-wrap:wrap; gap:1rem; } main .p-8 { padding:1rem; } }
+@media(prefers-reduced-motion:reduce) { * { animation:none!important; transition:none!important; } }

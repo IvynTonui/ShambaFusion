@@ -14,7 +14,7 @@ const getPostComments = async (req, res) => {
 
         res.json(comments);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching comments', error: error.message });
+        res.status(500).json({ message: 'Error fetching comments' });
     }
 };
 
@@ -34,15 +34,13 @@ const getCommentById = async (req, res) => {
 
         res.json(comments[0]);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching comment', error: error.message });
+        res.status(500).json({ message: 'Error fetching comment' });
     }
 };
 
 // Create comment
 const createComment = async (req, res) => {
     try {
-        console.log("🔍 Received request body:", req.body);
-        console.log("🔍 Authenticated user:", req.user);
 
         const { post_id, comment } = req.body;
 
@@ -73,14 +71,13 @@ const createComment = async (req, res) => {
         // After successfully creating the comment
         await notifyCommentAdded(post_id, result.insertId, user_id);
 
-        console.log("✅ Comment created with ID:", result.insertId);
         res.status(201).json({
             message: "Comment created successfully",
             comment_id: result.insertId
         });
     } catch (error) {
         console.error("❌ Error creating comment:", error);
-        res.status(500).json({ message: "Error creating comment", error: error.message });
+        res.status(500).json({ message: "Error creating comment" });
     }
 };
 
@@ -103,7 +100,7 @@ const updateComment = async (req, res) => {
 
         res.json({ message: 'Comment updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating comment', error: error.message });
+        res.status(500).json({ message: 'Error updating comment' });
     }
 };
 
@@ -131,7 +128,7 @@ const deleteComment = async (req, res) => {
 
         res.json({ message: 'Comment deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting comment', error: error.message });
+        res.status(500).json({ message: 'Error deleting comment' });
     }
 };
 // Get comment count for a post
@@ -148,8 +145,7 @@ const getCommentCount = async (req, res) => {
     } catch (error) {
         console.error('Error fetching comment count:', error);
         res.status(500).json({
-            message: 'Error fetching comment count',
-            error: error.message
+            message: 'Error fetching comment count'
         });
     }
 };

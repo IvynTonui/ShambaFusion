@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
     headers: {
         'Content-Type': 'application/json'
     }
@@ -10,10 +10,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
-        console.log("Token from localStorage:", token);  // Debugging
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log("Authorization Header Set:", config.headers.Authorization); // Debugging
         }
         return config;
     },
@@ -22,4 +20,11 @@ axiosInstance.interceptors.request.use(
     }
 );
 
+axiosInstance.interceptors.response.use(response => response, error => {
+    if (error.response?.status === 401 && localStorage.getItem('token')) {
+        localStorage.removeItem('token'); localStorage.removeItem('user');
+        window.location.assign('/login');
+    }
+    return Promise.reject(error);
+});
 export default axiosInstance;

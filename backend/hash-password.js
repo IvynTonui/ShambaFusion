@@ -1,12 +1,3 @@
+// Optional local utility. Never hardcode an account password here.
 const bcrypt = require('bcrypt');
-
-// The password you want to hash
-const password = "matchakarak";
-
-// Generate the hash
-bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
-        // This is your hashed password that you'll store in the database
-        console.log("Hashed password:", hash);
-    });
-});
+if (!process.env.PASSWORD_TO_HASH) { console.error('Set PASSWORD_TO_HASH privately in your shell.'); process.exitCode = 1; } else { bcrypt.hash(process.env.PASSWORD_TO_HASH, 10).then(hash => console.log(hash)).catch(() => { process.exitCode = 1; }); }

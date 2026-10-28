@@ -23,7 +23,7 @@ export const service = {
 
     getCurrentUser: () => {
         const userStr = localStorage.getItem('user');
-        return userStr ? JSON.parse(userStr) : null;
+        try { return userStr ? JSON.parse(userStr) : null; } catch { return null; }
     },
 
     getAllUsers: async () => {
@@ -44,14 +44,14 @@ export const service = {
 
 // Post Service (Discussions)
 export const postService = {
-    getPosts: async () => {
-        const response = await axios.get('/posts');
+    getPosts: async (page = 1) => {
+        const response = await axios.get(`/posts?page=${page}`);
         return response.data;
     },
 
     createPost: async (postData) => {
         const response = await axios.post('/posts', postData);
-        return response.data;
+        return (await axios.get(`/posts/${response.data.post_id}`)).data;
     },
 
     updatePost: async (postId, postData) => {
@@ -172,7 +172,7 @@ export const resourceService = {
             const response = await axios.get('/resources');
             return response.data;
         } catch (error) {
-            throw error.response?.data?.message || 'Failed to fetch resources';
+            throw new Error(error.response?.data?.message || 'Failed to fetch resources');
         }
     },
 
@@ -181,6 +181,7 @@ export const resourceService = {
             const formData = new FormData();
             // Correctly append all fields
             formData.append('name', resourceData.name);
+            formData.append('category_id', resourceData.category_id);
             formData.append('description', resourceData.description);
             formData.append('file', resourceData.file);
 
@@ -189,7 +190,7 @@ export const resourceService = {
             });
             return response.data;
         } catch (error) {
-            throw error.response?.data?.message || 'Failed to create resource';
+            throw new Error(error.response?.data?.message || 'Failed to create resource');
         }
     },
 
@@ -211,7 +212,7 @@ export const resourceService = {
             link.remove();
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            throw error.response?.data?.message || 'Failed to download resource';
+            throw new Error(error.response?.data?.message || 'Failed to download resource');
         }
     },
 
@@ -220,7 +221,7 @@ export const resourceService = {
             const response = await axios.delete(`/resources/${resourceId}`);
             return response.data;
         } catch (error) {
-            throw error.response?.data?.message || 'Failed to delete resource';
+            throw new Error(error.response?.data?.message || 'Failed to delete resource');
         }
     }
 };
@@ -231,7 +232,7 @@ export const systemService = {
             const response = await axios.get('/system/metrics');
             return response.data;
         } catch (error) {
-            throw error.response?.data?.message || 'Failed to fetch system metrics';
+            throw new Error(error.response?.data?.message || 'Failed to fetch system metrics');
         }
     }
 };

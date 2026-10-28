@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 import { MessageSquare, ThumbsUp, Share2, Edit, Trash2, Check } from "lucide-react";
 import EditPostForm from "./EditPostForm.jsx";
@@ -6,6 +7,7 @@ import CommentList from "../Comment/CommentList.jsx";
 import { postService } from "../../../services/service.js";
 
 const PostItem = ({
+                      user_id,
                       id,
                       author,
                       title,
@@ -18,6 +20,8 @@ const PostItem = ({
                       onPostDeleted
                   }) => {
 
+    const currentUser = JSON.parse(localStorage.getItem("user") || "null");
+    const owner = currentUser?.id === user_id;
     const [showComments, setShowComments] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [likeCount, setLikeCount] = useState(likes || 0);
@@ -111,18 +115,21 @@ const PostItem = ({
                             <p className="text-sm text-gray-500">{formatDate(time)}</p>
                         </div>
                         <div className="flex gap-2">
+                            {owner && <>
                             <button
+                                aria-label="Edit discussion"
                                 onClick={() => setIsEditing(true)}
                                 className="text-blue-500 hover:text-blue-700"
                             >
                                 <Edit size={18} />
                             </button>
-                            <DeletePostButton postId={id} onPostDeleted={onPostDeleted} />
+                            </>}
+                            {(owner || currentUser?.role === "admin") && <DeletePostButton postId={id} onPostDeleted={onPostDeleted} />}
                         </div>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-semibold">{title}</h4>
+                        <h4 className="text-lg font-semibold"><Link className="hover:text-green-700 hover:underline" to={`/post/${id}`}>{title}</Link></h4>
                         <p className="text-gray-600 mt-2">{content}</p>
                     </div>
 

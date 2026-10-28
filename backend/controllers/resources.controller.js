@@ -13,8 +13,7 @@ const getResources = async (req, res) => {
     } catch (error) {
         console.error('Error fetching resources:', error);
         res.status(500).json({
-            message: "Error fetching resources",
-            error: error.message
+            message: "Error fetching resources"
         });
     }
 };
@@ -34,8 +33,7 @@ const getResourceById = async (req, res) => {
     } catch (error) {
         console.error('Error fetching resource:', error);
         res.status(500).json({
-            message: "Error fetching resource",
-            error: error.message
+            message: "Error fetching resource"
         });
     }
 };
@@ -63,7 +61,7 @@ const createResource = async (req, res) => {
 
         const [result] = await db.query(
             "INSERT INTO Resources (name, description, category_id, file_url, uploaded_by) VALUES (?, ?, ?, ?, ?)",
-            [name, description, category_id, file_url, uploaded_by]
+            [name.trim(), description.trim(), category_id || null, file_url, uploaded_by]
         );
         // After successfully creating the resource
         await notifyResourceAdded(result.insertId, name, uploaded_by);
@@ -73,10 +71,10 @@ const createResource = async (req, res) => {
             resource_id: result.insertId
         });
     } catch (error) {
+        if (req.file?.path) await fs.promises.unlink(req.file.path).catch(() => {});
         console.error('Error adding resource:', error);
         res.status(500).json({
-            message: "Error adding resource",
-            error: error.message
+            message: "Error adding resource"
         });
     }
 };
@@ -122,16 +120,16 @@ const updateResource = async (req, res) => {
     } catch (error) {
         console.error('Error updating resource:', error);
         res.status(500).json({
-            message: "Error updating resource",
-            error: error.message
+            message: "Error updating resource"
         });
     }
 };
 
 const deleteResource = async (req, res) => {
-    const connection = await db.getConnection();
+    let connection;
 
     try {
+        connection = await db.getConnection();
         await connection.beginTransaction();
 
         const resourceId = req.params.id;
@@ -168,7 +166,7 @@ const deleteResource = async (req, res) => {
 
         // Attempt to delete file
         try {
-            await fs.unlink(filePath);
+            await fs.promises.unlink(filePath);
         } catch (fileError) {
             console.warn(`Could not delete file: ${filePath}`, fileError);
             // Continue with transaction even if file deletion fails
@@ -178,14 +176,13 @@ const deleteResource = async (req, res) => {
 
         res.json({ message: "Resource deleted successfully" });
     } catch (error) {
-        await connection.rollback();
+        if (connection) await connection.rollback();
         console.error('Error deleting resource:', error);
         res.status(500).json({
-            message: "Error deleting resource",
-            error: error.message
+            message: "Error deleting resource"
         });
     } finally {
-        connection.release();
+        connection?.release();
     }
 };
 
@@ -207,7 +204,7 @@ const downloadResource = async (req, res) => {
             return res.status(404).json({ message: "File not found" });
         }
 
-        res.download(filePath, (err) => {
+        res.download(filePath, resource[0].name + path.extname(filePath), (err) => {
             if (err) {
                 console.error('Download error:', err);
                 res.status(500).json({ message: "Error downloading resource" });
@@ -215,7 +212,7 @@ const downloadResource = async (req, res) => {
         });
     } catch (error) {
         console.error('Download error:', error);
-        res.status(500).json({ message: "Error downloading resource", error: error.message });
+        res.status(500).json({ message: "Error downloading resource" });
     }
 };
 

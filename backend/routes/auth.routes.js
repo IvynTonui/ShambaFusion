@@ -1,19 +1,27 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { register, login , getAllUsers,
-    deleteUser,
-    updateUserRole} = require('../controllers/auth.controller');
 
-router.post('/register', register);
-router.post('/login', login);
-// Fetch all users
-router.get('/', getAllUsers);
+const {
+  register,
+  login,
+  getAllUsers,
+  deleteUser,
+  updateUserRole,
+} = require("../controllers/auth.controller");
 
-// Delete a user
-router.delete('/:id', deleteUser);
+const { authenticateToken } = require("../middleware/auth.middleware");
 
-// Update a user’s role
-router.put('/:id/role', updateUserRole);
+const { requireAdmin } = require("../middleware/admin.middleware");
 
+// Public authentication
+router.post("/register", register);
+router.post("/login", login);
+
+// Protected administrator operations
+router.get("/", authenticateToken, requireAdmin, getAllUsers);
+
+router.delete("/:id", authenticateToken, requireAdmin, deleteUser);
+
+router.put("/:id/role", authenticateToken, requireAdmin, updateUserRole);
 
 module.exports = router;

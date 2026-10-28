@@ -1,51 +1,23 @@
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-
-// Ensure uploads directory exists
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    try {
-        fs.mkdirSync(uploadDir, { recursive: true });
-        console.log('Uploads directory created:', uploadDir);
-    } catch (error) {
-        console.error('Failed to create uploads directory:', error);
-    }
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = [
-        "application/pdf",
-        "image/jpeg",
-        "image/png",
-        "image/jpg",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error("Invalid file type. Only PDF, Word documents, and images are allowed"), false);
-    }
-};
-
-const upload = multer({
-    storage,
-    fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
-    }
-});
-
-module.exports = upload;
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs/promises');
+const crypto = require('crypto');
+const uploadDir = path.join(__dirname, '..', 'uploads');
+const parser = multer({storage: multer.memoryStorage(), limits: {fileSize: 5*1024*1024, files: 1, fields: 3, parts: 4}});
+module.exports = {single: (field) => (req,res,next) => parser.single(field)(req,res,async err => {
+  if (err) return res.status(400).json({message: 'Upload rejected. Use a PDF, PNG or JPEG under 5 MB.'});
+  if (!req.file) return res.status(400).json({message: 'File is required'});
+  const {name,description} = req.body;
+  if (typeof name !== 'string' || !name.trim() || name.length > 255 || typeof description !== 'string' || !description.trim() || description.length > 5000) return res.status(400).json({message:'Provide a name (up to 255 characters) and description (up to 5000 characters).'});
+  const b = req.file.buffer;
+  const ext = b.subarray(0,5).toString() === '%PDF-' ? '.pdf' : b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) ? '.png' : b[0] === 255 && b[1] === 216 && b[2] === 255 ? '.jpg' : null;
+  if (!ext || ![ext, ...(ext === '.jpg' ? ['.jpeg'] : [])].includes(path.extname(req.file.originalname).toLowerCase())) return res.status(400).json({message:'File contents and extension must match a PDF, PNG or JPEG.'});
+  try {
+    await fs.mkdir(uploadDir,{recursive:true});
+    req.file.filename = crypto.randomUUID()+ext;
+    req.file.path = path.join(uploadDir,req.file.filename);
+    await fs.writeFile(req.file.path,b,{flag:'wx'});
+    delete req.file.buffer;
+    next();
+  } catch(error) { next(error); }
+})};

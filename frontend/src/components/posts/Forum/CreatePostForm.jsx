@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { postService, categoryService } from "../../../services/service.js"; // Ensure correct import
 
 const CreatePostForm = ({ onPostCreated, onClose }) => {
+    const navigate = useNavigate();
+    const close = onClose || (() => navigate("/forum"));
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -48,8 +51,8 @@ const CreatePostForm = ({ onPostCreated, onClose }) => {
 
         try {
             const createdPost = await postService.createPost(formData);
-            onPostCreated(createdPost);
-            onClose();
+            onPostCreated?.(createdPost);
+            close();
         } catch (err) {
             console.error("Failed to create post", err);
             setError("Failed to create discussion. Please try again.");
@@ -59,9 +62,9 @@ const CreatePostForm = ({ onPostCreated, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg w-full max-w-md p-6">
-                <h2 className="text-2xl font-bold mb-4">Create New Discussion</h2>
+        <div className="fixed z-50 inset-0 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div role="dialog" aria-modal="true" aria-labelledby="create-discussion-title" onKeyDown={e => { if(e.key === "Escape") close(); }} className="bg-white rounded-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+                <h2 id="create-discussion-title" className="text-2xl font-bold mb-4">Create New Discussion</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Title Input */}
@@ -69,6 +72,7 @@ const CreatePostForm = ({ onPostCreated, onClose }) => {
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
                         <input
                             type="text"
+                            autoFocus
                             id="title"
                             name="title"
                             value={formData.title}
@@ -121,7 +125,7 @@ const CreatePostForm = ({ onPostCreated, onClose }) => {
                     <div className="flex justify-end space-x-3">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={close}
                             className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
                             Cancel

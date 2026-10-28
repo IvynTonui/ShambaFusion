@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { service } from '../../services/service.js';
 
-const LoginForm = () => {
+const LoginForm = ({ onLogin }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [formData, setFormData] = useState({
@@ -30,9 +30,10 @@ const LoginForm = () => {
             localStorage.setItem('user', JSON.stringify(response.user));
             localStorage.setItem('token', response.token);
             // Navigate to dashboard or previous attempted page
-            const intendedPath = location.state?.from || '/';
+            const requestedPath = location.state?.from;
+            const intendedPath = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//') && !requestedPath.includes('\\') ? requestedPath : '/';
             navigate(intendedPath, { replace: true });
-            window.location.reload(); // Ensure all components update with new auth state
+            onLogin?.(response.user);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to login');
         } finally {
@@ -48,7 +49,7 @@ const LoginForm = () => {
                         Sign in to your account
                     </h2>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                {location.state?.message && <p role="status" className="text-green-700">{location.state.message}</p>}<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm space-y-4">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -95,7 +96,7 @@ const LoginForm = () => {
                             {isLoading ? 'Signing in...' : 'Sign in'}
                         </button>
                     </div>
-                </form>
+                </form><p className="text-center text-sm mt-5"><Link to="/">← Shamba Fusion</Link> · <Link to="/register">Create an account</Link></p>
             </div>
         </div>
     );

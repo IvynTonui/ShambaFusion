@@ -41,3 +41,11 @@ uploads/
 # Misc
 *.bak
 *.tmp
+# Only sanitized, reviewed setup SQL may be tracked
+!backend/database/schema.sql
+.env.*
+!.env.example
+!**/.env.example
+
+# Local fictional demo account credentials
+backend/.demo-credentials.json

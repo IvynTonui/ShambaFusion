@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Download, Trash } from "lucide-react";
-import { resourceService } from "../../services/service.js";
+import { resourceService, categoryService } from "../../services/service.js";
 
 const AdminResources = () => {
+    const [categories, setCategories] = useState([]);
     const [resources, setResources] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
     const [newResource, setNewResource] = useState({
+        category_id: "",
         name: "",
         description: "",
         file: null,
@@ -15,6 +17,7 @@ const AdminResources = () => {
 
     useEffect(() => {
         fetchResources();
+        categoryService.getAllCategories().then(setCategories).catch(() => setError("Could not load resource categories."));
     }, []);
 
     const fetchResources = async () => {
@@ -49,7 +52,8 @@ const AdminResources = () => {
 
     const resetForm = () => {
         setNewResource({
-            name: "",
+            category_id: "",
+        name: "",
             description: "",
             file: null,
         });
@@ -143,8 +147,11 @@ const AdminResources = () => {
                         onChange={handleInputChange}
                         required
                     ></textarea>
+                    <label className="block">Category<select required className="border rounded p-2 w-full" name="category_id" value={newResource.category_id} onChange={handleInputChange}><option value="">Choose a category</option>{categories.map(c => <option key={c.category_id} value={c.category_id}>{c.name}</option>)}</select></label>
+                    <p className="text-sm text-gray-500">PDF, PNG or JPEG · maximum 5 MB · use non-sensitive demo material.</p>
                     <input
                         type="file"
+                        accept=".pdf,.png,.jpg,.jpeg"
                         className="border p-2 rounded w-full"
                         onChange={handleFileChange}
                         required

@@ -30,10 +30,10 @@ const Resources = () => {
             // Find the specific resource to get its name
             const resource = resources.find(r => r.resource_id === resourceId);
             if (resource) {
-                await resourceService.downloadResource(resourceId, resource.name);
+                await resourceService.downloadResource(resourceId, resource.name + (resource.file_url?.match(/\.[a-z0-9]+$/i)?.[0] || ""));
             }
         } catch (err) {
-            console.error("Error downloading resource:", err);
+            setError(err.message || "Please sign in to download resources.");
         }
     };
 
@@ -64,7 +64,7 @@ const Resources = () => {
                 <div className="space-y-4">
                     {resources.map((resource) => (
                         <div
-                            key={resource.id}
+                            key={resource.resource_id}
                             className="p-4 bg-white shadow rounded flex justify-between items-center"
                         >
                             <div>

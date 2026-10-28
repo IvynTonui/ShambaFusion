@@ -8,6 +8,8 @@ import { postService, categoryService } from "../../../services/service";
 import PostItem from "./PostItem.jsx";
 
 const PostList = ({ user }) => {
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +20,7 @@ const PostList = ({ user }) => {
     useEffect(() => {
         fetchCategories();
         fetchPosts();
-    }, [selectedCategory]);
+    }, [selectedCategory, page]);
 
     const fetchCategories = async () => {
         try {
@@ -38,7 +40,8 @@ const PostList = ({ user }) => {
             if (selectedCategory && selectedCategory !== "") {
                 response = await categoryService.getPostsByCategory(selectedCategory);
             } else {
-                response = await postService.getPosts();
+                response = await postService.getPosts(page);
+                setTotalPages(response.pagination.totalPages);
             }
             console.log("🔍 API Response:", response);
 
@@ -117,6 +120,7 @@ const PostList = ({ user }) => {
                 </button>
             </div>
 
+            {!selectedCategory && <div className="flex gap-4 items-center"><button disabled={page <= 1} onClick={() => setPage(page-1)}>Previous</button><span>Page {page} of {Math.max(1,totalPages)}</span><button disabled={page >= totalPages} onClick={() => setPage(page+1)}>Next</button></div>}
             {showCreateForm && (
                 <CreatePostForm
                     onPostCreated={handlePostCreated}
@@ -139,6 +143,7 @@ const PostList = ({ user }) => {
                     {posts.map((post) => (
                         <PostItem
                             key={post.post_id}
+                            user_id={post.user_id}
                             id={post.post_id}
                             author={post.author_name}  // Pass author_name from API
                             title={post.title}
