@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Sprout } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
 
 
 
@@ -13,9 +11,6 @@ import img3 from "../../images/img3.jpg";
 import img4 from "../../images/img4.jpg";
 import video1 from "../../images/video1.mp4";
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 const DashboardCard = ({ icon: Icon, title, value, trend }) => (
     <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -23,9 +18,7 @@ const DashboardCard = ({ icon: Icon, title, value, trend }) => (
             <div className="p-2 bg-green-100 rounded-lg">
                 <Icon size={24} className="text-green-600" />
             </div>
-            <span className={`text-sm font-medium ${trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {trend > 0 ? '+' : ''}{trend}%
-            </span>
+
         </div>
         <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
         <p className="text-2xl font-semibold mt-1">{value}</p>
@@ -41,12 +34,15 @@ const Dashboard = ({ user }) => {
                 <div className="relative w-full h-64 rounded-lg shadow-lg overflow-hidden">
                     <video
                         src={video1}
-                        autoPlay
+                        poster={img1}
+                        controls
+                        preload="metadata"
+                        playsInline
                         loop
                         muted
                         className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center px-4 lg:px-10">
+                    <div className="pointer-events-none absolute inset-0 bg-black bg-opacity-40 flex items-center px-4 lg:px-10">
                         <h2 className="text-white text-sm sm:text-xl md:text-2xl lg:text-3xl font-bold leading-snug">
                             Empowering Farmers Through Connection & Collaboration
                         </h2>
@@ -105,90 +101,21 @@ const Dashboard = ({ user }) => {
                         <DashboardCard
                             icon={Users}
                             title="Active Discussions"
-                            value="10"
-                            trend={15.2}
+                            value="Discuss"
+                            trend={0}
                         />
                         <DashboardCard
                             icon={Sprout}
                             title="Resources Available"
-                            value="25"
-                            trend={8.5}
+                            value="Explore"
+                            trend={0}
                         />
                     </div>
                 )}
 
                 {/* Photo Carousel */}
                 <div className="mt-6 w-full">
-                    <Swiper
-                        spaceBetween={20}
-                        slidesPerView={1}
-                        navigation={{
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
-                        }}
-                        pagination={{
-                            clickable: true,
-                            el: '.swiper-pagination',
-                            type: 'bullets',
-                        }}
-                        modules={[Navigation, Pagination]}
-                        className="rounded-lg shadow-lg relative">
-                        <SwiperSlide>
-                            <div className="aspect-w-16 aspect-h-9 w-full">
-                                <img
-                                    src={img1}
-                                    alt="Farmers Group Discussion"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="aspect-w-16 aspect-h-9 w-full">
-                                <img
-                                    src={img2}
-                                    alt="Farmers in Field"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="aspect-w-16 aspect-h-9 w-full">
-                                <img
-                                    src={img3}
-                                    alt="Community Meeting"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="aspect-w-16 aspect-h-9 w-full">
-                                <img
-                                    src={img4}
-                                    alt="Sustainable Farming Techniques"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-
-                        <div
-                            className="swiper-button-prev absolute left-4 top-1/2 z-10 bg-white bg-opacity-70 rounded-full p-3 cursor-pointer shadow-md transform -translate-y-1/2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                 strokeLinejoin="round" className="text-green-600">
-                                <path d="M15 18l-6-6 6-6" />
-                            </svg>
-                        </div>
-                        <div
-                            className="swiper-button-next absolute right-4 top-1/2 z-10 bg-white bg-opacity-70 rounded-full p-3 cursor-pointer shadow-md transform -translate-y-1/2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                 strokeLinejoin="round" className="text-green-600">
-                                <path d="M9 18l6-6-6-6" />
-                            </svg>
-                        </div>
-
-                        <div className="swiper-pagination bottom-4 !static mt-4"></div>
-                    </Swiper>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{[img1,img2,img3,img4].map((src,i)=><img key={src} src={src} loading="lazy" alt={["Farmers sharing knowledge","Practical field work","Community learning","Sustainable farming"][i]} className="w-full h-56 object-cover rounded-xl" />)}</div>
                 </div>
             </div>
         </div>

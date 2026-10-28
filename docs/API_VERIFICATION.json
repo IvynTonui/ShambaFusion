@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-28",
+  "results": [
+    {
+      "check": "participant login",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "participant login",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "registration forces participant role",
+      "status": 201,
+      "pass": true
+    },
+    {
+      "check": "registered account login",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "guest post access denied",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "check": "participant user management denied",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "check": "participant metrics denied",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "check": "participant uploads denied",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "check": "categories",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "discussion page 1",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "discussion page 2",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "shared post detail",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "seeded comments",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "seeded likes visible",
+      "pass": true
+    },
+    {
+      "check": "like status",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "category filtering",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "notifications",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "resource browsing",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "download 1",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "download 2",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "download 3",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "create controlled test post",
+      "status": 201,
+      "pass": true
+    },
+    {
+      "check": "nonowner edit denied",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "check": "nonowner delete denied",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "check": "owner edit",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "create comment",
+      "status": 201,
+      "pass": true
+    },
+    {
+      "check": "like own test post",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "unlike own test post",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "owner deletes newly created test post",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "deleted test post is absent",
+      "status": 404,
+      "pass": true
+    }
+  ]
+}

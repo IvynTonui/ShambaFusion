@@ -6,7 +6,7 @@ const getAllCategories = async (req, res) => {
         const [categories] = await db.query('SELECT * FROM Categories ORDER BY name');
         res.json(categories);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching categories', error: error.message });
+        res.status(500).json({ message: 'Error fetching categories' });
     }
 };
 
@@ -20,7 +20,7 @@ const getCategoryById = async (req, res) => {
         }
 
         // Get associated posts and resources
-        const [posts] = await db.query('SELECT * FROM Posts WHERE category_id = ?', [req.params.id]);
+        const [posts] = await db.query('SELECT Posts.*, Users.name AS author_name, (SELECT COUNT(*) FROM Comments WHERE Comments.post_id = Posts.post_id) AS comment_count FROM Posts LEFT JOIN Users ON Users.user_id = Posts.user_id WHERE category_id = ? ORDER BY Posts.created_at DESC', [req.params.id]);
         const [resources] = await db.query('SELECT * FROM Resources WHERE category_id = ?', [req.params.id]);
 
         const category = categories[0];
@@ -29,7 +29,7 @@ const getCategoryById = async (req, res) => {
 
         res.json(category);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching category', error: error.message });
+        res.status(500).json({ message: 'Error fetching category' });
     }
 };
 
@@ -53,7 +53,7 @@ const createCategory = async (req, res) => {
             category_id: result.insertId
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating category', error: error.message });
+        res.status(500).json({ message: 'Error creating category' });
     }
 };
 
@@ -79,7 +79,7 @@ const updateCategory = async (req, res) => {
 
         res.json({ message: 'Category updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating category', error: error.message });
+        res.status(500).json({ message: 'Error updating category' });
     }
 };
 
@@ -109,7 +109,7 @@ const deleteCategory = async (req, res) => {
 
         res.json({ message: 'Category deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting category', error: error.message });
+        res.status(500).json({ message: 'Error deleting category' });
     }
 };
 

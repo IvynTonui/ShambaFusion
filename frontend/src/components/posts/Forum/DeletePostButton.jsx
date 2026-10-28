@@ -3,6 +3,7 @@ import { postService } from "../../../services/service.js";
 import { Trash2 } from "lucide-react";
 
 const DeletePostButton = ({ postId, onPostDeleted }) => {
+    const [error, setError] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
@@ -13,16 +14,16 @@ const DeletePostButton = ({ postId, onPostDeleted }) => {
             await postService.deletePost(postId);
             onPostDeleted(postId); // Remove from parent state
         } catch (err) {
-            console.error("Error deleting post:", err);
+            setError(err.response?.data?.message || "Delete failed. Please retry.");
         } finally {
             setIsDeleting(false);
         }
     };
 
     return (
-        <button onClick={handleDelete} disabled={isDeleting} className="text-red-500 hover:text-red-700">
+        <><span role="alert">{error}</span><button aria-label="Delete discussion" onClick={handleDelete} disabled={isDeleting} className="text-red-500 hover:text-red-700">
             {isDeleting ? "Deleting..." : <Trash2 size={18} />}
-        </button>
+        </button></>
     );
 };
 

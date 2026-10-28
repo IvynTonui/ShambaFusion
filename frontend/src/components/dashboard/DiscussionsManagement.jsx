@@ -26,7 +26,7 @@ const DiscussionsManagement = () => {
         }
     };
 
-    // Ensure consistency with post.id or post.post_id
+    // Ensure consistency with post.post_id or post.post_id
     const handleDelete = async (postId) => {
         console.log('Attempting to delete post:', {
             postId: postId,
@@ -38,7 +38,7 @@ const DiscussionsManagement = () => {
         setActionLoading(postId);
         try {
             await postService.deletePost(postId);
-            setPosts(posts.filter((post) => post.id !== postId));
+            setPosts(posts.filter((post) => post.post_id !== postId));
         } catch (err) {
             console.error("Detailed error deleting post:", err);
             console.log('Error response:', err.response);
@@ -80,21 +80,21 @@ const DiscussionsManagement = () => {
                             {posts.length > 0 ? (
                                 posts.map((post) => (
                                     <tr
-                                        key={post.id}
+                                        key={post.post_id}
                                         className="border-t hover:bg-gray-100 transition"
                                     >
                                         <td className="px-6 py-4">{post.title}</td>
                                         <td className="px-6 py-4">
                                             <button
-                                                onClick={() => handleDelete(post.id)}
+                                                onClick={() => handleDelete(post.post_id)}
                                                 className={`${
-                                                    actionLoading === post.id
+                                                    actionLoading === post.post_id
                                                         ? "text-gray-400 cursor-not-allowed"
                                                         : "text-red-600 hover:text-red-800"
                                                 } font-medium`}
-                                                disabled={actionLoading === post.id}
+                                                disabled={actionLoading === post.post_id}
                                             >
-                                                {actionLoading === post.id
+                                                {actionLoading === post.post_id
                                                     ? "Deleting..."
                                                     : "Delete"}
                                             </button>

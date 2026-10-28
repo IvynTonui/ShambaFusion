@@ -48,8 +48,8 @@ const getSystemMetrics = async (req, res) => {
         COUNT(*) as count
       FROM Users
       WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-      GROUP BY DATE_FORMAT(created_at, '%Y-%m')
-      ORDER BY created_at
+      GROUP BY DATE_FORMAT(created_at, '%Y-%m'), DATE_FORMAT(created_at, '%b %Y')
+      ORDER BY MIN(created_at)
     `);
 
         // Get post activity by category
@@ -77,7 +77,7 @@ const getSystemMetrics = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching system metrics:', error);
-        res.status(500).json({ message: 'Error fetching system metrics', error: error.message });
+        res.status(500).json({ message: 'Error fetching system metrics' });
     }
 };
 

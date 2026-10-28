@@ -1,165 +1,130 @@
 # Shamba Fusion
 
-**An Online Community of Practice for Farmers in Smart Agriculture**
+A full-stack community application for sharing practical agricultural knowledge. Participants ask questions, discuss farming practices and access a curated resource library; administrators manage users, discussions and resources.
 
-A full-stack web platform that connects smallholder farmers, agricultural experts, researchers, and NGOs in a shared digital space for knowledge sharing, expert consultation, and access to curated agricultural resources. Built as the final-year project for a BSc in Information Systems & Technology at United States International University–Africa.
+Built as an undergraduate BSc Information Systems & Technology project at **United States International University–Africa (2025)**, with Kenyan smallholder farmers and Molo, Nakuru County as the original context. Portfolio maintenance in October 2026 focuses on authorization, reliable discussion workflows, safer uploads, responsive navigation and reproducible setup.
 
-> 🇰🇪 Designed for the Kenyan smallholder farming context, with Molo, Nakuru County as the pilot site. Aligned with UN Sustainable Development Goal 2 (Zero Hunger).
+## Architecture and technology
 
----
+React 18 + Vite + Tailwind CSS → Axios REST requests → Node.js + Express → MySQL (`mysql2`). Authentication uses bcrypt password hashes and signed JWTs. The server checks the current database role on authenticated requests. Multer handles bounded, signature-checked uploads. Recharts supports the administration reports.
 
-## Table of Contents
+![Architecture](docs/images/01-architecture.png)
 
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [System Architecture](#system-architecture)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Academic Context](#academic-context)
-- [Author](#author)
+The architecture image is from the academic prototype; the implemented permission model is **participant / administrator**. Farmer, researcher and NGO are domain audiences, not separately enforced roles.
 
----
+## Implemented scope
 
-## Overview
+- Registration, login, logout and authenticated navigation.
+- Discussion creation, editing by owners, deletion by owners/admins, detail/share links, category filters and paginated feed.
+- Comments and likes; persisted notifications fetched when opening the notifications page.
+- Public resource browsing; authenticated downloads; administrator uploads of PDF, PNG and JPEG (5 MB maximum).
+- Administrator user management, discussion moderation, resources and reports.
+- Responsive navigation and explicit loading/error/empty states.
 
-Smallholder farmers in rural Kenya face persistent barriers in accessing timely agricultural information: fragmented communication channels, delayed expert advice, limited peer-to-peer knowledge exchange, and unreliable sources. Shamba Fusion addresses these gaps by providing a single, structured digital hub where farmers can post questions, browse a curated resource library, exchange best practices with peers, and receive guidance from agricultural experts and researchers.
-
-The platform was developed end-to-end as part of an undergraduate research project that included a 100-respondent field survey (87% response rate), system requirements analysis, full-stack development, and prototype deployment.
-
-## Tech Stack
-
-**Frontend**
-- React 18 (Vite)
-- Tailwind CSS
-- Axios
-
-**Backend**
-- Node.js
-- Express
-- JSON Web Tokens (JWT) for authentication
-- bcrypt for password hashing
-- Multer for file uploads
-
-**Database**
-- MySQL (managed via phpMyAdmin during development)
-
-**Tooling**
-- WebStorm (IDE)
-- Git & GitHub (version control)
-- Postman (API testing)
-- draw.io (system modeling)
-
-## System Architecture
-
-A three-tier architecture: a React single-page frontend communicates with a Node.js/Express REST API, which persists data to a MySQL relational database. Five user roles (farmers, agricultural experts, researchers, NGOs, administrators) interact with the platform through role-based access control.
-
-![System Architecture](docs/images/01-architecture.png)
-
-## Features
-
-- **🔐 Authentication & role-based access** — Secure registration and login with JWT-based sessions; five distinct user roles with permission scoping for moderation, content upload, and administration.
-- **💬 Discussion forum** — Categorised threads (Crop Cultivation, Livestock Management, Market & Pricing, etc.) where farmers post questions, comment, like, and share.
-- **📚 Resource library** — Centralised repository of agricultural guides, research papers, and best practices, uploadable by experts and researchers, downloadable by all users.
-- **🔔 Notifications system** — Real-time alerts for new replies, new resources, and platform updates.
-- **🔍 Search & filtering** — Filter discussions by category and search across the resource library.
-- **🛡️ Admin dashboard** — User management, discussion moderation, and system reports for administrators.
-- **📱 Responsive UI** — Built with Tailwind to work on desktop, tablet, and mobile.
+Notifications are **not real-time**. Resource search, expert consultation scheduling and five distinct permission roles are not implemented.
 
 ## Screenshots
 
-### Dashboard
-![User Dashboard](docs/images/04-dashboard.png)
+Current interface (October 28, 2026):
 
-### Discussion Forum
-![Discussion Forum](docs/images/02-discussion-forum.png)
+[Current populated mobile preview](docs/images/09-populated-mobile.png). The populated forum and resource library below were captured from the current application. All displayed community activity is fictional demo data.
 
-### Resource Library
-![Resource Library](docs/images/03-resource-library.png)
+![Discussion forum](docs/images/07-populated-forum.png)
+![Resource library](docs/images/08-populated-resources.png)
 
-## Project Structure
-FinalProject/
-├── backend/
-│   ├── config/          # Database configuration
-│   ├── controllers/     # Request handlers (auth, posts, resources, etc.)
-│   ├── middleware/      # Auth middleware, file upload middleware
-│   ├── routes/          # API route definitions
-│   ├── utils/           # Helper utilities
-│   ├── server.js        # Express entry point
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/  # React components (auth, dashboard, posts, resources, ui)
-│   │   ├── hooks/       # Custom React hooks
-│   │   ├── pages/       # Page-level components
-│   │   ├── services/    # API service layer
-│   │   ├── utils/       # Frontend utilities
-│   │   └── App.jsx
-│   ├── index.html
-│   └── package.json
-└── docs/
-└── images/          # Architecture diagrams and screenshots
+## Local setup
 
-## Getting Started
+Prerequisites: Node.js 22 LTS or newer supported LTS, npm, MySQL 8 and a MySQL user permitted to access your chosen database. Use separate terminals for frontend/backend.
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- MySQL 8+ (or MariaDB equivalent)
-- Git
-
-### Setup
-
-1. **Clone the repository**
-```bash
-   git clone https://github.com/IvynTonui/ShambaFusion.git
-   cd ShambaFusion
+```sh
+git clone https://github.com/IvynTonui/ShambaFusion.git
+cd ShambaFusion
+cd backend
+npm ci
+cp .env.example .env
 ```
 
-2. **Set up the database**
-    - Create a MySQL database (e.g., `shamba_fusion`)
-    - Import the schema (a SQL dump can be provided on request)
+Edit the new private `backend/.env` with `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `JWT_SECRET` (generate with `openssl rand -hex 32`) and `PORT=3001`. Never overwrite an existing `.env`. Optional `FRONTEND_ORIGIN` defaults to `http://localhost:5173`.
 
-3. **Configure backend environment**
-    - In `backend/`, create a `.env` file with the following variables:
-      DB_HOST=localhost
-      DB_USER=your_db_user
-      DB_PASSWORD=your_db_password
-      DB_NAME=shamba_fusion
-      JWT_SECRET=your_jwt_secret
-      PORT=3001
-      UPLOAD_DIR=uploads
+### Existing database
 
-4. **Install backend dependencies and run**
-```bash
-   cd backend
-   npm install
-   node server.js
+Keep your current database and configuration. **Do not import the reconstructed schema into it.** Existing foreign keys and schema compatibility must be checked independently; the schema below is a reconstruction, not a migration.
+
+### Fictional demo data in the verified local database
+
+The local `shamba_fusion` database is populated with fictional agricultural discussions,
+comments, likes and three real downloadable worksheets. Existing accounts were preserved.
+From `backend/`, rerun the guarded additive seed with:
+
+```sh
+npm run demo:seed -- --confirm-local
 ```
-The API will be available at `http://localhost:3001`.
 
-5. **Install frontend dependencies and run**
-```bash
-   cd frontend
-   npm install
-   npm run dev
+Demo participant logins use `community1@shambafusion.example.test` through
+`community4@shambafusion.example.test`. Generated passwords are stored only in the
+ignored local `backend/.demo-credentials.json`; inspect it privately. No demo
+administrator is created. See [demo data and safety notes](docs/DEMO_DATA.md).
+
+### Fresh database setup — not yet verified
+
+`backend/database/schema.sql` is a reconstruction for a new empty database only.
+Create a separate empty database with your MySQL client, then import it explicitly:
+
+```sh
+mysql -u YOUR_DB_USER -p YOUR_NEW_EMPTY_DATABASE < database/schema.sql
 ```
-The frontend will be available at `http://localhost:5173`.
 
-## Academic Context
+Do not import it into an existing database. Its types and deletion constraints
+differ from the verified live schema, as documented in `docs/DEMO_DATA.md`.
+The current seed intentionally supports only the verified local `shamba_fusion`
+database; it refuses other names. Fresh installation and fresh-data seeding remain
+unverified and are not represented as a tested one-command setup.
 
-This project was submitted as the final-year capstone (APT/IST 4900A) for the BSc in Information Systems & Technology at United States International University–Africa, Spring 2025, under the supervision of Dr. Collins Oduor (Assistant Professor, School of Science and Technology).
+### Run
 
-The research component followed a descriptive design combining qualitative and quantitative methods. A structured questionnaire was distributed to 100 stakeholders (smallholder farmers, agricultural experts, and researchers), with 87 valid responses (87% response rate). Findings confirmed strong demand for a centralised digital community: 100% of respondents recommended adoption, with discussion forums (100%), expert consultations (96.6%), and access to a structured research library (96.6%) ranked as the most-wanted features.
+From `backend/`:
+
+```sh
+npm start
+```
+
+In another terminal, from `frontend/`:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open **http://localhost:5173**. API: **http://localhost:3001**. The frontend defaults to `http://localhost:3001/api`; optional `frontend/.env` can set `VITE_API_URL` using `.env.example`. Restart servers after changing environment variables. Use `localhost` consistently with the default CORS configuration.
+
+## Checks
+
+```sh
+cd backend
+npm test
+cd ../frontend
+npm run build
+```
+
+Backend tests use mocked database boundaries and do not connect to your database. They verify authorization, stale-role handling and selected controller contracts. They do not replace full MySQL/browser integration testing. Live demo verification additionally covers 30 authenticated API checks; see [verification notes](docs/VERIFICATION.md) for actual results and limits. Existing lint debt is not a release claim; `npm run lint` still reports legacy issues.
+
+## Project structure
+
+```text
+backend/   Express routes, controllers, middleware, database/schema.sql,
+           scripts/seed-demo.js and tests/
+frontend/  React pages, components, services and styles
+ docs/     Prototype images, demo checklist and verification notes
+```
+
+## Known limitations and deployment
+
+JWTs are stored in localStorage; an XSS issue could expose a session. This is a portfolio demonstration, without email verification, password recovery, malware scanning or real-time infrastructure. Signature checks do not guarantee an uploaded document is harmless. Uploaded files are publicly addressable under `/uploads`; do not upload private material. Only use synthetic data in a public demo.
+
+Likes use multiple queries and are not transactionally consistent under concurrent requests. Resource file cleanup and database deletion are not a single atomic operation. Existing database cascade behavior may differ from the reconstructed schema. Account deletion is permanent and removes related data in the demo schema.
+
+For future hosting, configure HTTPS, API/CORS origins, SPA fallback for detail routes, persistent upload storage, database backups and a least-privilege database account. Do not publish a demo administrator password in a public README. Deployment and GitHub publishing are separate manual steps.
 
 ## Author
 
-**Ivyn Chepchumba Tonui**
-BSc Information Systems & Technology, USIU–Africa (2025)
-📧 tonuiivyn2@gmail.com
-🔗 [GitHub](https://github.com/IvynTonui)
-
----
-
-*Built with the belief that better tools for farmers means better food security for everyone.*
+**Ivyn Chepchumba Tonui** — BSc Information Systems & Technology, USIU–Africa (2025). [GitHub](https://github.com/IvynTonui).

@@ -4,8 +4,8 @@ const { notifyPostLiked } = require('../utils/notifications.utils');
 // Get all posts
 const getAllPosts = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 10));
         const offset = (page - 1) * limit;
 
         // Get total count for pagination
@@ -22,7 +22,7 @@ const getAllPosts = async (req, res) => {
             FROM Posts
                      LEFT JOIN Users ON Posts.user_id = Users.user_id
                      LEFT JOIN Categories ON Posts.category_id = Categories.category_id
-            ORDER BY Posts.created_at DESC
+            ORDER BY Posts.created_at DESC, Posts.post_id DESC
                 LIMIT ? OFFSET ?
         `, [limit, offset]);
 
@@ -36,7 +36,7 @@ const getAllPosts = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching posts', error: error.message });
+        res.status(500).json({ message: 'Error fetching posts' });
     }
 };
 
@@ -62,12 +62,11 @@ const getPostById = async (req, res) => {
 
         res.json(posts[0]);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching post', error: error.message });
+        res.status(500).json({ message: 'Error fetching post' });
     }
 };
 // Create post
 const createPost = async (req, res) => {
-    console.log("req.user in createPost:", req.user); // Debug: log the user info from token
 
     try {
         const { title, content, category_id } = req.body;
@@ -96,7 +95,7 @@ const createPost = async (req, res) => {
             post_id: result.insertId
         });
     } catch (error) {
-        res.status(500).json({ message: "Error creating post", error: error.message });
+        res.status(500).json({ message: "Error creating post" });
     }
 };
 
@@ -127,7 +126,7 @@ const updatePost = async (req, res) => {
 
         res.json({ message: "Post updated successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Error updating post", error: error.message });
+        res.status(500).json({ message: "Error updating post" });
     }
 };
 
@@ -154,7 +153,7 @@ const deletePost = async (req, res) => {
         res.json({ message: "Post deleted successfully" });
     } catch (error) {
         console.error("Error deleting post:", error);
-        res.status(500).json({ message: "Error deleting post", error: error.message });
+        res.status(500).json({ message: "Error deleting post" });
     }
 };
 
@@ -191,7 +190,7 @@ const likePost = async (req, res) => {
         res.json({ message: "Post liked successfully" });
     } catch (error) {
         console.error("Error in likePost:", error);
-        res.status(500).json({ message: "Error liking post", error: error.message });
+        res.status(500).json({ message: "Error liking post" });
     }
 };
 const unlikePost = async (req, res) => {
@@ -220,7 +219,7 @@ const unlikePost = async (req, res) => {
 
         res.json({ message: "Post unliked successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Error unliking post", error: error.message });
+        res.status(500).json({ message: "Error unliking post" });
     }
 };
 
@@ -237,7 +236,7 @@ const getLikeStatus = async (req, res) => {
 
         res.json({ isLiked: existingLike.length > 0 });
     } catch (error) {
-        res.status(500).json({ message: "Error checking like status", error: error.message });
+        res.status(500).json({ message: "Error checking like status" });
     }
 };
 

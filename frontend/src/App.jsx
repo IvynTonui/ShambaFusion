@@ -1,3 +1,4 @@
+import PostDetail from './pages/PostDetail';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { service } from './services/service.js';
@@ -27,13 +28,13 @@ const App = () => {
 
     // Protect only private routes
     const ProtectedRoute = ({ children }) => {
-        return user ? children : <Navigate to="/login" replace />;
+        return user ? children : <Navigate to="/login" state={{from: window.location.pathname}} replace />;
     };
 
     // Admin route protection
     const AdminRoute = ({ children }) => {
         if (!user) {
-            return <Navigate to="/login" replace />;
+            return <Navigate to="/login" state={{from: window.location.pathname}} replace />;
         }
         if (user.role !== 'admin') {
             return <Navigate to="/" replace />;
@@ -45,7 +46,7 @@ const App = () => {
         <Router>
             <Routes>
                 {/* Public Routes */}
-                <Route path="/login" element={<LoginForm />} />
+                <Route path="/login" element={<LoginForm onLogin={setUser} />} />
                 <Route path="/register" element={<RegisterForm />} />
 
                 {/* Main Layout */}
@@ -54,9 +55,10 @@ const App = () => {
 
                     {/* Public Routes */}
                     <Route path="forum" element={<PostList user={user} />} />
-                    <Route path="newPost" element={<CreatePostForm user={user} />} />
+                    <Route path="newPost" element={<ProtectedRoute><CreatePostForm user={user} /></ProtectedRoute>} />
+                    <Route path="post/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
                     <Route path="resources" element={<Resources user={user} />} />
-                    <Route path="notifications" element={<Notifications user={user} />} />
+                    <Route path="notifications" element={<ProtectedRoute><Notifications user={user} /></ProtectedRoute>} />
 
                     {/* Admin Routes */}
                     <Route

@@ -1,0 +1,63 @@
+# Staged publication files
+
+Includes earlier local security work. No commit, push or deployment performed.
+Superseded captures `docs/images/05-portfolio-dashboard.png` and `docs/images/06-portfolio-mobile.png` remain local and unstaged.
+
+- `.gitignore`
+- `README.md`
+- `backend/.env.example`
+- `backend/controllers/auth.controller.js`
+- `backend/controllers/categories.controller.js`
+- `backend/controllers/comments.controller.js`
+- `backend/controllers/notifications.controller.js`
+- `backend/controllers/posts.controller.js`
+- `backend/controllers/resources.controller.js`
+- `backend/controllers/system.controller.js`
+- `backend/database/schema.sql`
+- `backend/hash-password.js`
+- `backend/middleware/admin.middleware.js`
+- `backend/middleware/auth.middleware.js`
+- `backend/middleware/upload.middleware.js`
+- `backend/package-lock.json`
+- `backend/package.json`
+- `backend/routes/auth.routes.js`
+- `backend/routes/resources.routes.js`
+- `backend/routes/system.routes.js`
+- `backend/scripts/seed-demo.js`
+- `backend/scripts/verify-demo.js`
+- `backend/server.js`
+- `backend/tests/flows.test.js`
+- `backend/tests/security.test.js`
+- `backend/tests/uploads.test.js`
+- `docs/API_VERIFICATION.json`
+- `docs/CHANGED_FILES.md`
+- `docs/DEMO_CHECKLIST.md`
+- `docs/DEMO_DATA.md`
+- `docs/PUBLICATION_REVIEW.md`
+- `docs/VERIFICATION.md`
+- `docs/images/07-populated-forum.png`
+- `docs/images/08-populated-resources.png`
+- `docs/images/09-populated-mobile.png`
+- `frontend/.env.example`
+- `frontend/index.html`
+- `frontend/package-lock.json`
+- `frontend/package.json`
+- `frontend/public/favicon.svg`
+- `frontend/src/App.jsx`
+- `frontend/src/components/auth/LoginForm.jsx`
+- `frontend/src/components/auth/RegisterForm.jsx`
+- `frontend/src/components/dashboard/Dashboard.jsx`
+- `frontend/src/components/dashboard/DiscussionsManagement.jsx`
+- `frontend/src/components/posts/Forum/CreatePostForm.jsx`
+- `frontend/src/components/posts/Forum/DeletePostButton.jsx`
+- `frontend/src/components/posts/Forum/PostItem.jsx`
+- `frontend/src/components/posts/Forum/PostList.jsx`
+- `frontend/src/components/resources/AdminResources.jsx`
+- `frontend/src/components/resources/Resources.jsx`
+- `frontend/src/components/ui/Header.jsx`
+- `frontend/src/components/ui/MainLayout.jsx`
+- `frontend/src/components/ui/Sidebar.jsx`
+- `frontend/src/index.css`
+- `frontend/src/pages/PostDetail.jsx`
+- `frontend/src/services/service.js`
+- `frontend/src/utils/axios-config.js`

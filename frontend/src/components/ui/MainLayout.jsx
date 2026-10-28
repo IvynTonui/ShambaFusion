@@ -8,9 +8,9 @@ const MainLayout = ({ user, onLogout }) => {
     return (
         <div className="flex max-w-screen overflow-hidden min-h-screen bg-gray-50">
             <Sidebar user={user} onLogout={onLogout} />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 min-w-0 md:ml-64">
                 <Header user={user} />
-                <main className="pt-20 min-h-screen">
+                <main className="pt-36 md:pt-20 min-h-screen">
                     <Outlet />
                 </main>
             </div>

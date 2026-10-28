@@ -1,6 +1,6 @@
 // src/components/layout/Header.jsx
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 
 const Header = ({ user }) => {
@@ -10,24 +10,17 @@ const Header = ({ user }) => {
         location.pathname.slice(2);
 
     return (
-        <header className="bg-white shadow-md w-full py-4 px-6 flex justify-between items-center fixed top-0 left-64 right-0">
+        <header className="bg-white shadow-md py-3 px-6 flex justify-between items-center fixed top-24 md:top-0 left-0 md:left-64 right-0 z-20">
             <h1 className="text-xl font-semibold text-green-800">{pageName}</h1>
 
             {user && (
                 <div className="flex items-center gap-4">
-                    <button className="relative hover:bg-gray-100 p-2 rounded-full">
-                        <Bell size={20} />
-                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
+                    <Link to="/notifications" aria-label="Notifications"><Bell size={20} /></Link>
                     <div className="flex items-center gap-3">
-                        <img
-                            src="/api/placeholder/32/32"
-                            alt={user.name}
-                            className="w-8 h-8 rounded-full"
-                        />
+                        <span className="w-9 h-9 rounded-full bg-green-100 text-green-800 grid place-items-center font-bold">{user.name?.slice(0,1)}</span>
                         <div className="text-sm">
-                            <p className="font-medium text-gray-700">{user.name}</p>
-                            <p className="text-gray-500">{user.email}</p>
+                            <p className="font-medium text-gray-700 truncate max-w-[140px]">{user.name}</p>
+                            <p className="hidden sm:block text-gray-500 truncate max-w-[240px]">{user.email}</p>
                         </div>
                     </div>
                 </div>

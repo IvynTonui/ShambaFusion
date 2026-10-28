@@ -23,8 +23,7 @@ const getUserNotifications = async (req, res) => {
     } catch (error) {
         console.error('Error fetching notifications:', error);
         res.status(500).json({
-            message: 'Error fetching notifications',
-            error: error.message
+            message: 'Error fetching notifications'
         });
     }
 };
@@ -54,8 +53,7 @@ const markNotificationRead = async (req, res) => {
     } catch (error) {
         console.error('Error updating notification:', error);
         res.status(500).json({
-            message: 'Error updating notification',
-            error: error.message
+            message: 'Error updating notification'
         });
     }
 };
@@ -74,8 +72,7 @@ const markAllNotificationsRead = async (req, res) => {
     } catch (error) {
         console.error('Error updating notifications:', error);
         res.status(500).json({
-            message: 'Error updating notifications',
-            error: error.message
+            message: 'Error updating notifications'
         });
     }
 };
@@ -94,8 +91,7 @@ const getUnreadCount = async (req, res) => {
     } catch (error) {
         console.error('Error fetching notification count:', error);
         res.status(500).json({
-            message: 'Error fetching notification count',
-            error: error.message
+            message: 'Error fetching notification count'
         });
     }
 };
@@ -136,8 +132,7 @@ const deleteNotification = async (req, res) => {
     } catch (error) {
         console.error('Error deleting notification:', error);
         res.status(500).json({
-            message: 'Error deleting notification',
-            error: error.message
+            message: 'Error deleting notification'
         });
     }
 };

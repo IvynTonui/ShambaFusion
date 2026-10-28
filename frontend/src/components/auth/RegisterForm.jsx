@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { service } from '../../services/service.js';
 
 const RegisterForm = () => {
@@ -132,7 +132,7 @@ const RegisterForm = () => {
                             {isLoading ? 'Creating account...' : 'Create account'}
                         </button>
                     </div>
-                </form>
+                </form><p className="text-center text-sm mt-5"><Link to="/">← Shamba Fusion</Link> · <Link to="/login">Already registered? Sign in</Link></p>
             </div>
         </div>
     );

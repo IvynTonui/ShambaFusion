@@ -1,25 +1,28 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    console.log("Auth Header Received:", authHeader); // Debugging
+const db = require("../config/db.config");
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log("Extracted Token:", token); // Debugging
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "Authentication required",
+    });
+  }
 
-    if (!token) {
-        return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
+  const token = authHeader.slice(7);
 
-    try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Token:", verified); // Debugging
-        req.user = verified;
-        next();
-    } catch (err) {
-        console.log("JWT Error:", err.message); // Debugging
-        res.status(403).json({ message: 'Invalid token.' });
-    }
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+
+    const [users] = await db.query('SELECT user_id, role FROM Users WHERE user_id = ?', [verified.userId]);
+    if (!users.length) return res.status(401).json({message:'Account no longer available'});
+    req.user = {...verified, role: users[0].role};
+    next();
+  } catch (err) {
+    if (!["JsonWebTokenError", "TokenExpiredError", "NotBeforeError"].includes(err.name)) return res.status(503).json({message:"Authentication service unavailable"});
+    return res.status(401).json({message:"Invalid or expired token"});
+  }
 };
 
 module.exports = { authenticateToken };
